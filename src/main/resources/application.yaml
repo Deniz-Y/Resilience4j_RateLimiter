@@ -1,0 +1,35 @@
+server:
+  port: 8085
+
+resilience4j.ratelimiter:
+  instances:
+    processService:
+      limitForPeriod: 3
+      limitRefreshPeriod: 1m
+      timeoutDuration: 1s
+      registerHealthIndicator: true
+
+management:
+  health:
+    ratelimiters:
+      enabled: true
+    diskSpace:
+      enabled: false
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: '*'
+      pathmapping:
+        health: /health
+        /info: /info
+  endpoint:
+    health:
+      show-details: always
+
+spring:
+  cache:
+    type: jcache
+    jcache:
+      provider: com.hazelcast.cache.impl.HazelcastServerCachingProvider
+      config: classpath:hazelcast.xml
